@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-import { touchableStyles } from '../../css/touchableStyles';
-import { AsyncImage } from '../AsyncImage/AsyncImage';
-import { Box } from '../Box/Box';
-import { SpinnerIcon } from '../Icons/Spinner';
-import { I18nContext } from '../RainbowKitProvider/I18nContext';
-import * as styles from './WalletButton.css';
-import { WalletButtonRenderer } from './WalletButtonRenderer';
+import React, { useContext } from "react";
+import { touchableStyles } from "../../css/touchableStyles";
+import { AsyncImage } from "../AsyncImage/AsyncImage";
+import { Box } from "../Box/Box";
+import { SpinnerIcon } from "../Icons/Spinner";
+import { I18nContext } from "../RainbowKitProvider/I18nContext";
+import * as styles from "./WalletButton.css";
+import { WalletButtonRenderer } from "./WalletButtonRenderer";
 
 export const WalletButton = ({ wallet }: { wallet?: string }) => {
   return (
@@ -13,7 +13,7 @@ export const WalletButton = ({ wallet }: { wallet?: string }) => {
       {({ ready, connect, connected, mounted, connector, loading }) => {
         const isDisabled = !ready || loading;
         const { i18n } = useContext(I18nContext);
-        const connectorName = connector?.name || '';
+        const connectorName = connector?.name || "";
 
         // SSR mismatch issue in next.js:
         // By default, "rainbow wallet" text is expected.
@@ -27,7 +27,7 @@ export const WalletButton = ({ wallet }: { wallet?: string }) => {
             flexDirection="column"
             alignItems="center"
             disabled={isDisabled}
-            pointerEvents={isDisabled ? 'none' : 'all'}
+            pointerEvents={isDisabled ? "none" : "all"}
           >
             <Box
               as="button"
@@ -38,16 +38,16 @@ export const WalletButton = ({ wallet }: { wallet?: string }) => {
                 styles.maxWidth,
                 styles.border,
                 touchableStyles({
-                  active: 'shrink',
-                  hover: 'grow',
+                  active: "shrink",
+                  hover: "grow",
                 }),
               ]}
               minHeight="44"
               onClick={connect}
               disabled={!ready || loading}
               padding="6"
-              style={{ willChange: 'transform' }}
-              testId={`wallet-button-${connector?.id || ''}`}
+              style={{ willChange: "transform" }}
+              testId={`wallet-button-${connector?.id || ""}`}
               transition="default"
               width="full"
               background="connectButtonBackground"
@@ -76,8 +76,9 @@ export const WalletButton = ({ wallet }: { wallet?: string }) => {
                         background={connector?.iconBackground}
                         borderRadius="6"
                         height="28"
-                        src={connector?.iconUrl}
                         width="28"
+                        src={connector?.iconUrl}
+                        useAsImage
                       />
                     )}
                   </Box>
@@ -87,9 +88,9 @@ export const WalletButton = ({ wallet }: { wallet?: string }) => {
                     flexDirection="column"
                     color="modalText"
                   >
-                    <Box testId={`wallet-button-label-${connector?.id || ''}`}>
+                    <Box testId={`wallet-button-label-${connector?.id || ""}`}>
                       {loading
-                        ? i18n.t('connect.status.connecting', {
+                        ? i18n.t("connect.status.connecting", {
                             wallet: connectorName,
                           })
                         : connectorName}
