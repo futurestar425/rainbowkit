@@ -126,7 +126,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
 
   const onQrCode = async (wallet: WalletConnector) => {
     const sWallet = wallets.find((w) => wallet.id === w.id);
-    console.log("onQRCode?", { sWallet });
+    console.log("onQRCode?", { wallets });
     const uri = await sWallet?.getQrCodeUri?.();
     console.log("onQRCode?", { uri });
 
