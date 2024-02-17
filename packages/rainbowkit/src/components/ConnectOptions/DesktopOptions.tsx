@@ -98,6 +98,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     if (connector && !initialized.current) {
       changeWalletStep(WalletStep.Connect);
+      console.log({ onConnector: connector?.ready });
       selectWallet(connector);
       initialized.current = true;
     }
