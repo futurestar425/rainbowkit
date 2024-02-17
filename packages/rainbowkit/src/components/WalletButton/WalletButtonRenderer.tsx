@@ -4,25 +4,27 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react';
-import { useAccount, useAccountEffect } from 'wagmi';
-import { useConnectionStatus } from '../../hooks/useConnectionStatus';
-import { useIsMounted } from '../../hooks/useIsMounted';
-import { isMobile } from '../../utils/isMobile';
+} from "react";
+import { useAccount, useAccountEffect, useConnections } from "wagmi";
+import { useConnectionStatus } from "../../hooks/useConnectionStatus";
+import { useIsMounted } from "../../hooks/useIsMounted";
+import { isMobile } from "../../utils/isMobile";
 import {
   addLatestWalletId,
   clearLatestWalletId,
   getLatestWalletId,
-} from '../../wallets/latestWalletId';
+} from "../../wallets/latestWalletId";
 import {
   WalletConnector,
   useWalletConnectors,
-} from '../../wallets/useWalletConnectors';
+} from "../../wallets/useWalletConnectors";
 import {
   useConnectModal,
   useModalState,
-} from '../RainbowKitProvider/ModalContext';
-import { WalletButtonContext } from '../RainbowKitProvider/WalletButtonContext';
+} from "../RainbowKitProvider/ModalContext";
+import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
+import { findWalletConnector } from "../../utils/findConnector";
+import { stringEquals } from "../../utils/stringEquals";
 
 export interface WalletButtonRendererProps {
   wallet?: string;
@@ -40,22 +42,19 @@ export interface WalletButtonRendererProps {
 export function WalletButtonRenderer({
   // Wallet is the same as `connector.id` which is injected into
   // wagmi connectors
-  wallet = 'rainbow',
+  wallet = "rainbow",
   children,
 }: WalletButtonRendererProps) {
   const isMounted = useIsMounted();
   const { openConnectModal } = useConnectModal();
   const { connectModalOpen } = useModalState();
   const { connector, setConnector } = useContext(WalletButtonContext);
-  const [firstConnector] = useWalletConnectors()
-    .filter((wallet) => wallet.isRainbowKitConnector)
-    // rainbowkit / wagmi connectors can uppercase some letters on the `id` field.
-    // Id for metamask is `metaMask`, so instead we will make sure it's has lowercase comparison
-    .filter((_wallet) => _wallet.id.toLowerCase() === wallet.toLowerCase())
-    .sort((a, b) => a.groupIndex - b.groupIndex);
+  const connectors = useWalletConnectors();
+
+  const firstConnector = findWalletConnector(wallet, connectors);
 
   if (!firstConnector) {
-    throw new Error('Connector not found');
+    throw new Error("Connector not found");
   }
 
   const connectionStatus = useConnectionStatus();
@@ -71,7 +70,7 @@ export function WalletButtonRenderer({
     if (!connectModalOpen && connector) setConnector(null);
   }, [connectModalOpen, connector, setConnector]);
 
-  const { isConnected, isConnecting } = useAccount();
+  const { isConnecting } = useAccount();
 
   useAccountEffect({
     onConnect: () => {
@@ -83,20 +82,20 @@ export function WalletButtonRenderer({
     onDisconnect: clearLatestWalletId,
   });
 
-  const isLastWalletIdConnected = useMemo(() => {
-    const lastWalletId = getLatestWalletId();
-
-    if (!lastWalletId || !firstConnector?.id) {
-      return false;
-    }
-
-    // Sometimes localstorage might not be in sync
-    // if component doesn't rerender, but for if user
-    // is not connected don't show them the green badge
-    if (!isConnected) return false;
-
-    return lastWalletId === firstConnector?.id;
-  }, [isConnected, firstConnector]);
+  const connections = useConnections();
+  console.log(connections);
+  const connected = connections.some((connection) => {
+    const connectorId = connection.connector.id;
+    return (
+      // Check if RainbowKit connector id connected
+      stringEquals(connectorId, wallet) ||
+      // Wagmi uses EIP-6963 id's as rdns. E.g instead of
+      // 'metamask' as id they use 'metamask.io' since that's
+      // the metamask's rdns. We want to check if an EIP-6963
+      // wallet is connected as well with this logic.
+      stringEquals(connectorId, firstConnector?.id)
+    );
+  });
 
   const connectWallet = async () => {
     try {
@@ -112,18 +111,18 @@ export function WalletButtonRenderer({
 
   // If anyone uses SIWE then we don't want them to be able to connect
   // if they are in a process of authentication
-  const isStatusLoading = connectionStatus === 'loading';
+  const isStatusLoading = connectionStatus === "loading";
   const ready =
     !isConnecting && !!openConnectModal && firstConnector && !isStatusLoading;
 
-  const isNotSupported = !firstConnector?.installed || !firstConnector?.ready;
+  const isNotSupported = !firstConnector?.ready;
 
   return (
     <>
       {children({
         error: isError,
         loading,
-        connected: isLastWalletIdConnected,
+        connected,
         ready,
         mounted: isMounted(),
         connector: firstConnector,
@@ -131,7 +130,7 @@ export function WalletButtonRenderer({
           // Used to track which last wallet user has clicked
           // we can then use this value to show connected green badge
           // for our custom Wallet Button API
-          addLatestWalletId(firstConnector?.id || '');
+          addLatestWalletId(firstConnector?.id || "");
 
           // If openConnectModal is true and user is on mobile or
           // if user hasn't installed the connector then we prompt them
