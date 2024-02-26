@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
-import { Box } from '../Box/Box';
-import { DisclaimerLink } from '../Disclaimer/DisclaimerLink';
-import { DisclaimerText } from '../Disclaimer/DisclaimerText';
-import { useWalletConnectors } from '../../wallets/useWalletConnectors';
-import { I18nContext } from '../RainbowKitProvider/I18nContext';
-import { ActionButton } from '../Button/ActionButton';
-import { AppContext } from '../RainbowKitProvider/AppContext';
-import { Text } from '../Text/Text';
-import { MobileWalletStep, WalletButton } from './MobileOptions';
-import * as styles from './MobileOptions.css';
+import React, { useContext } from "react";
+import { Box } from "../Box/Box";
+import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
+import { DisclaimerText } from "../Disclaimer/DisclaimerText";
+import { useWalletConnectors } from "../../wallets/useWalletConnectors";
+import { I18nContext } from "../RainbowKitProvider/I18nContext";
+import { ActionButton } from "../Button/ActionButton";
+import { AppContext } from "../RainbowKitProvider/AppContext";
+import { Text } from "../Text/Text";
+import { MobileWalletStep, WalletButton } from "./MobileOptions";
+import * as styles from "./MobileOptions.css";
 
 interface MobileConnectDetailProps {
   onClose: () => void;
@@ -33,14 +33,16 @@ const MobileConnectDetail = ({
         paddingBottom="20"
         paddingTop="6"
       >
-        <Box display="flex" style={{ margin: '0 auto' }}>
+        <Box display="flex" style={{ margin: "0 auto" }}>
           {wallets
             .filter((wallet) => wallet.ready)
             .map((wallet) => {
               return (
                 <Box key={wallet.id} paddingX="20">
                   <Box width="60">
-                    {wallet.isRainbowKitConnector ? 'rainbow' : 'eip6963'}
+                    {wallet.isRainbowKitConnector ? "rainbow" : "eip6963"}
+                    {wallet.rdns ?? "undefined"}
+                    {!!wallet.iconUrl}
                     <WalletButton onClose={onClose} wallet={wallet} />
                   </Box>
                 </Box>
@@ -62,14 +64,14 @@ const MobileConnectDetail = ({
         flexDirection="column"
         gap="32"
         paddingX="32"
-        style={{ textAlign: 'center' }}
+        style={{ textAlign: "center" }}
       >
         <Box display="flex" flexDirection="column" gap="8" textAlign="center">
           <Text color="modalText" size="16" weight="bold">
-            {i18n.t('intro.title')}
+            {i18n.t("intro.title")}
           </Text>
           <Text color="modalTextSecondary" size="16">
-            {i18n.t('intro.description')}
+            {i18n.t("intro.description")}
           </Text>
         </Box>
       </Box>
@@ -77,14 +79,14 @@ const MobileConnectDetail = ({
       <Box paddingTop="32" paddingX="20">
         <Box display="flex" gap="14" justifyContent="center">
           <ActionButton
-            label={i18n.t('intro.get.label')}
+            label={i18n.t("intro.get.label")}
             onClick={() => setWalletStep(MobileWalletStep.Get)}
             size="large"
             type="secondary"
           />
           <ActionButton
             href={learnMoreUrl}
-            label={i18n.t('intro.learn_more.label')}
+            label={i18n.t("intro.learn_more.label")}
             size="large"
             type="secondary"
           />
