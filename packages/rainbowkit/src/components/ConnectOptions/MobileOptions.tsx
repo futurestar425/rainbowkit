@@ -15,14 +15,12 @@ import { AsyncImage } from '../AsyncImage/AsyncImage';
 import { Box } from '../Box/Box';
 import { ActionButton } from '../Button/ActionButton';
 import { CloseButton } from '../CloseButton/CloseButton';
-import { DisclaimerLink } from '../Disclaimer/DisclaimerLink';
-import { DisclaimerText } from '../Disclaimer/DisclaimerText';
 import { BackIcon } from '../Icons/Back';
-import { AppContext } from '../RainbowKitProvider/AppContext';
 import { I18nContext } from '../RainbowKitProvider/I18nContext';
 import { useCoolMode } from '../RainbowKitProvider/useCoolMode';
 import { setWalletConnectDeepLink } from '../RainbowKitProvider/walletConnectDeepLink';
 import { Text } from '../Text/Text';
+import MobileConnectDetail from './MobileConnectDetail';
 import * as styles from './MobileOptions.css';
 
 const LoadingSpinner = ({ wallet }: { wallet: WalletConnector }) => {
@@ -198,7 +196,7 @@ export function WalletButton({
   );
 }
 
-enum MobileWalletStep {
+export enum MobileWalletStep {
   Connect = 'CONNECT',
   Get = 'GET',
 }
@@ -208,7 +206,6 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
   const wallets = useWalletConnectors().filter(
     (wallet) => wallet.isRainbowKitConnector,
   );
-  const { disclaimer: Disclaimer, learnMoreUrl } = useContext(AppContext);
 
   let headerLabel = null;
   let walletContent = null;
@@ -228,81 +225,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
       headerLabel = i18n.t('connect.title');
       headerBackgroundContrast = true;
       walletContent = (
-        <Box>
-          <Box
-            background="profileForeground"
-            className={styles.scroll}
-            display="flex"
-            paddingBottom="20"
-            paddingTop="6"
-          >
-            <Box display="flex" style={{ margin: '0 auto' }}>
-              {wallets
-                .filter((wallet) => wallet.ready)
-                .map((wallet) => {
-                  return (
-                    <Box key={wallet.id} paddingX="20">
-                      <Box width="60">
-                        <WalletButton onClose={onClose} wallet={wallet} />
-                      </Box>
-                    </Box>
-                  );
-                })}
-            </Box>
-          </Box>
-
-          <Box
-            background="generalBorder"
-            height="1"
-            marginBottom="32"
-            marginTop="-1"
-          />
-
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="column"
-            gap="32"
-            paddingX="32"
-            style={{ textAlign: 'center' }}
-          >
-            <Box
-              display="flex"
-              flexDirection="column"
-              gap="8"
-              textAlign="center"
-            >
-              <Text color="modalText" size="16" weight="bold">
-                {i18n.t('intro.title')}
-              </Text>
-              <Text color="modalTextSecondary" size="16">
-                {i18n.t('intro.description')}
-              </Text>
-            </Box>
-          </Box>
-
-          <Box paddingTop="32" paddingX="20">
-            <Box display="flex" gap="14" justifyContent="center">
-              <ActionButton
-                label={i18n.t('intro.get.label')}
-                onClick={() => setWalletStep(MobileWalletStep.Get)}
-                size="large"
-                type="secondary"
-              />
-              <ActionButton
-                href={learnMoreUrl}
-                label={i18n.t('intro.learn_more.label')}
-                size="large"
-                type="secondary"
-              />
-            </Box>
-          </Box>
-          {Disclaimer && (
-            <Box marginTop="28" marginX="32" textAlign="center">
-              <Disclaimer Link={DisclaimerLink} Text={DisclaimerText} />
-            </Box>
-          )}
-        </Box>
+        <MobileConnectDetail onClose={onClose} setWalletStep={setWalletStep} />
       );
       break;
     }
