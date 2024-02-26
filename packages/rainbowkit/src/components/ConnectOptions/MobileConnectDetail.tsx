@@ -9,6 +9,7 @@ import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
 import { MobileWalletStep, WalletButton } from "./MobileOptions";
 import * as styles from "./MobileOptions.css";
+import { useAsyncImage } from "../AsyncImage/useAsyncImage";
 
 interface MobileConnectDetailProps {
   onClose: () => void;
@@ -37,6 +38,8 @@ const MobileConnectDetail = ({
           {wallets
             .filter((wallet) => wallet.ready)
             .map((wallet) => {
+              const src = useAsyncImage(wallet.iconUrl);
+
               return (
                 <Box key={wallet.id} paddingX="20">
                   <Box width="60">
@@ -52,9 +55,15 @@ const MobileConnectDetail = ({
                     >
                       {wallet.rdns && wallet.rdns}
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
+                    <button
+                      onClick={() => {
+                        // @ts-ignore
+                        window.location.href = src;
+                      }}
+                      style={{ display: "flex", flexDirection: "column" }}
+                    >
                       {wallet.iconUrl && "true"}
-                    </div>
+                    </button>
 
                     <WalletButton onClose={onClose} wallet={wallet} />
                   </Box>

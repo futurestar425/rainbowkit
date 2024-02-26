@@ -4,24 +4,24 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { touchableStyles } from '../../css/touchableStyles';
-import { isIOS } from '../../utils/isMobile';
+} from "react";
+import { touchableStyles } from "../../css/touchableStyles";
+import { isIOS } from "../../utils/isMobile";
 import {
   WalletConnector,
   useWalletConnectors,
-} from '../../wallets/useWalletConnectors';
-import { AsyncImage } from '../AsyncImage/AsyncImage';
-import { Box } from '../Box/Box';
-import { ActionButton } from '../Button/ActionButton';
-import { CloseButton } from '../CloseButton/CloseButton';
-import { BackIcon } from '../Icons/Back';
-import { I18nContext } from '../RainbowKitProvider/I18nContext';
-import { useCoolMode } from '../RainbowKitProvider/useCoolMode';
-import { setWalletConnectDeepLink } from '../RainbowKitProvider/walletConnectDeepLink';
-import { Text } from '../Text/Text';
-import MobileConnectDetail from './MobileConnectDetail';
-import * as styles from './MobileOptions.css';
+} from "../../wallets/useWalletConnectors";
+import { AsyncImage } from "../AsyncImage/AsyncImage";
+import { Box } from "../Box/Box";
+import { ActionButton } from "../Button/ActionButton";
+import { CloseButton } from "../CloseButton/CloseButton";
+import { BackIcon } from "../Icons/Back";
+import { I18nContext } from "../RainbowKitProvider/I18nContext";
+import { useCoolMode } from "../RainbowKitProvider/useCoolMode";
+import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
+import { Text } from "../Text/Text";
+import MobileConnectDetail from "./MobileConnectDetail";
+import * as styles from "./MobileOptions.css";
 
 const LoadingSpinner = ({ wallet }: { wallet: WalletConnector }) => {
   const width = 80;
@@ -47,7 +47,7 @@ const LoadingSpinner = ({ wallet }: { wallet: WalletConnector }) => {
           // Prop style passing works only in `@vanilla-extract/recipes`.
           // Instead downloading packages we can do this
           // manually without passing props
-          stroke: wallet?.iconAccent || '#0D3887',
+          stroke: wallet?.iconAccent || "#0D3887",
         }}
       />
     </svg>
@@ -73,6 +73,7 @@ export function WalletButton({
     ready,
     shortName,
     showWalletConnectModal,
+    isRainbowKitConnector,
   } = wallet;
 
   const coolModeRef = useCoolMode(iconUrl);
@@ -90,7 +91,7 @@ export function WalletButton({
         setWalletConnectDeepLink({ mobileUri, name });
       }
 
-      if (mobileUri.startsWith('http')) {
+      if (mobileUri.startsWith("http")) {
         // Workaround for https://github.com/rainbow-me/rainbowkit/issues/524.
         // Using 'window.open' causes issues on iOS in non-Safari browsers and
         // WebViews where a blank tab is left behind after connecting.
@@ -100,17 +101,17 @@ export function WalletButton({
         // For whatever reason, links with a target of "_blank" don't suffer
         // from this problem, and programmatically clicking a detached link
         // element with the same attributes also avoids the issue.
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = mobileUri;
-        link.target = '_blank';
-        link.rel = 'noreferrer noopener';
+        link.target = "_blank";
+        link.rel = "noreferrer noopener";
         link.click();
       } else {
         window.location.href = mobileUri;
       }
     };
 
-    if (id !== 'walletConnect') onMobileUri();
+    if (id !== "walletConnect") onMobileUri();
 
     // If the id is "walletConnect" then "showWalletConnectModal" will always be true
     if (showWalletConnectModal) {
@@ -134,13 +135,13 @@ export function WalletButton({
   return (
     <Box
       as="button"
-      color={ready ? 'modalText' : 'modalTextSecondary'}
+      color={ready ? "modalText" : "modalTextSecondary"}
       disabled={!ready}
       fontFamily="body"
       key={id}
       onClick={onConnect}
       ref={coolModeRef}
-      style={{ overflow: 'visible', textAlign: 'center' }}
+      style={{ overflow: "visible", textAlign: "center" }}
       testId={`wallet-option-${id}`}
       type="button"
       width="full"
@@ -166,6 +167,7 @@ export function WalletButton({
             boxShadow="walletLogo"
             height="60"
             src={iconUrl}
+            useAsImage={!isRainbowKitConnector}
             width="60"
           />
         </Box>
@@ -173,20 +175,20 @@ export function WalletButton({
           <Box display="flex" flexDirection="column" textAlign="center">
             <Text
               as="h2"
-              color={wallet.ready ? 'modalText' : 'modalTextSecondary'}
+              color={wallet.ready ? "modalText" : "modalTextSecondary"}
               size="13"
               weight="medium"
             >
               {/* Fix button text clipping in Safari: https://stackoverflow.com/questions/41100273/overflowing-button-text-is-being-clipped-in-safari */}
               <Box as="span" position="relative">
                 {shortName ?? name}
-                {!wallet.ready && ' (unsupported)'}
+                {!wallet.ready && " (unsupported)"}
               </Box>
             </Text>
 
             {wallet.recent && (
               <Text color="accentColor" size="12" weight="medium">
-                {i18n.t('connect.recent')}
+                {i18n.t("connect.recent")}
               </Text>
             )}
           </Box>
@@ -197,14 +199,14 @@ export function WalletButton({
 }
 
 export enum MobileWalletStep {
-  Connect = 'CONNECT',
-  Get = 'GET',
+  Connect = "CONNECT",
+  Get = "GET",
 }
 
 export function MobileOptions({ onClose }: { onClose: () => void }) {
-  const titleId = 'rk_connect_title';
+  const titleId = "rk_connect_title";
   const wallets = useWalletConnectors().filter(
-    (wallet) => wallet.isRainbowKitConnector,
+    (wallet) => wallet.isRainbowKitConnector
   );
 
   let headerLabel = null;
@@ -213,7 +215,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
   let headerBackButtonLink: MobileWalletStep | null = null;
 
   const [walletStep, setWalletStep] = useState<MobileWalletStep>(
-    MobileWalletStep.Connect,
+    MobileWalletStep.Connect
   );
 
   const { i18n } = useContext(I18nContext);
@@ -222,7 +224,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
 
   switch (walletStep) {
     case MobileWalletStep.Connect: {
-      headerLabel = i18n.t('connect.title');
+      headerLabel = i18n.t("connect.title");
       headerBackgroundContrast = true;
       walletContent = (
         <MobileConnectDetail onClose={onClose} setWalletStep={setWalletStep} />
@@ -230,7 +232,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
       break;
     }
     case MobileWalletStep.Get: {
-      headerLabel = i18n.t('get.title');
+      headerLabel = i18n.t("get.title");
       headerBackButtonLink = MobileWalletStep.Connect;
 
       const mobileWallets = wallets
@@ -238,7 +240,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
           (wallet) =>
             wallet.downloadUrls?.ios ||
             wallet.downloadUrls?.android ||
-            wallet.downloadUrls?.mobile,
+            wallet.downloadUrls?.mobile
         )
         ?.splice(0, 3);
 
@@ -295,7 +297,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
                           (ios ? downloadUrls?.ios : downloadUrls?.android) ||
                           downloadUrls?.mobile
                         }
-                        label={i18n.t('get.action.label')}
+                        label={i18n.t("get.action.label")}
                         size="small"
                         type="secondary"
                       />
@@ -314,14 +316,14 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
             })}
           </Box>
           {/* spacer */}
-          <Box style={{ marginBottom: '42px' }} />
+          <Box style={{ marginBottom: "42px" }} />
           <Box
             alignItems="center"
             display="flex"
             flexDirection="column"
             gap="36"
             paddingX="36"
-            style={{ textAlign: 'center' }}
+            style={{ textAlign: "center" }}
           >
             <Box
               display="flex"
@@ -330,10 +332,10 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
               textAlign="center"
             >
               <Text color="modalText" size="16" weight="bold">
-                {i18n.t('get.looking_for.title')}
+                {i18n.t("get.looking_for.title")}
               </Text>
               <Text color="modalTextSecondary" size="16">
-                {i18n.t('get.looking_for.mobile.description')}
+                {i18n.t("get.looking_for.mobile.description")}
               </Text>
             </Box>
           </Box>
@@ -348,7 +350,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
       {/* header section */}
       <Box
         background={
-          headerBackgroundContrast ? 'profileForeground' : 'modalBackground'
+          headerBackgroundContrast ? "profileForeground" : "modalBackground"
         }
         display="flex"
         flexDirection="column"
@@ -376,8 +378,8 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
                 alignItems="center"
                 as="button"
                 className={touchableStyles({
-                  active: 'shrinkSm',
-                  hover: 'growLg',
+                  active: "shrinkSm",
+                  hover: "growLg",
                 })}
                 color="accentColor"
                 display="flex"
@@ -385,7 +387,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
                 marginTop="20"
                 onClick={() => setWalletStep(headerBackButtonLink!)}
                 padding="16"
-                style={{ height: 17, willChange: 'transform' }}
+                style={{ height: 17, willChange: "transform" }}
                 transition="default"
                 type="button"
               >
