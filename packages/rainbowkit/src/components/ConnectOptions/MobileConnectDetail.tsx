@@ -40,9 +40,22 @@ const MobileConnectDetail = ({
               return (
                 <Box key={wallet.id} paddingX="20">
                   <Box width="60">
-                    {wallet.isRainbowKitConnector ? "rainbow" : "eip6963"}
-                    {wallet.rdns ?? "undefined"}
-                    {!!wallet.iconUrl}
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      {wallet.isRainbowKitConnector ? "rainbow" : "eip6963"}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        margin: "18px 0",
+                      }}
+                    >
+                      {wallet.rdns && wallet.rdns}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      {wallet.iconUrl && "true"}
+                    </div>
+
                     <WalletButton onClose={onClose} wallet={wallet} />
                   </Box>
                 </Box>
