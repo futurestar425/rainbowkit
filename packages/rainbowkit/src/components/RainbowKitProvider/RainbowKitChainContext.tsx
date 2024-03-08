@@ -30,14 +30,13 @@ export function RainbowKitChainProvider({
 
   return (
     <RainbowKitChainContext.Provider
-      value={useMemo(
-        () => ({
+      value={useMemo(() => {
+        return {
           chains: provideRainbowKitChains(chains),
           initialChainId:
             typeof initialChain === 'number' ? initialChain : initialChain?.id,
-        }),
-        [chains, initialChain],
-      )}
+        };
+      }, [chains, initialChain])}
     >
       {children}
     </RainbowKitChainContext.Provider>
