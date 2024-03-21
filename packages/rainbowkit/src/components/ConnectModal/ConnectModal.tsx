@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDisconnect } from 'wagmi';
+import { useDisconnect } from '../../hooks/useDisconnect';
 import { useConnectionStatus } from '../../hooks/useConnectionStatus';
 import ConnectOptions from '../ConnectOptions/ConnectOptions';
 import { Dialog } from '../Dialog/Dialog';
