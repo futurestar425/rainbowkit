@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useAccount, useAccountEffect } from 'wagmi';
+import { useAccountEffect } from 'wagmi';
 import { useConnectionStatus } from '../../hooks/useConnectionStatus';
 import { useIsMounted } from '../../hooks/useIsMounted';
 import { isMobile } from '../../utils/isMobile';
@@ -71,8 +71,6 @@ export function WalletButtonRenderer({
     if (!connectModalOpen && connector) setConnector(null);
   }, [connectModalOpen, connector, setConnector]);
 
-  const { isConnected, isConnecting } = useAccount();
-
   useAccountEffect({
     onConnect: () => {
       // If you get error on desktop and then switch to mobile view
@@ -93,10 +91,10 @@ export function WalletButtonRenderer({
     // Sometimes localstorage might not be in sync
     // if component doesn't rerender, but for if user
     // is not connected don't show them the green badge
-    if (!isConnected) return false;
+    if (connectionStatus !== 'connected') return false;
 
     return lastWalletId === firstConnector?.id;
-  }, [isConnected, firstConnector]);
+  }, [connectionStatus, firstConnector]);
 
   const connectWallet = async () => {
     try {
@@ -113,8 +111,7 @@ export function WalletButtonRenderer({
   // If anyone uses SIWE then we don't want them to be able to connect
   // if they are in a process of authentication
   const isStatusLoading = connectionStatus === 'loading';
-  const ready =
-    !isConnecting && !!openConnectModal && firstConnector && !isStatusLoading;
+  const ready = !!openConnectModal && firstConnector && !isStatusLoading;
 
   const isNotSupported = !firstConnector?.installed || !firstConnector?.ready;
 

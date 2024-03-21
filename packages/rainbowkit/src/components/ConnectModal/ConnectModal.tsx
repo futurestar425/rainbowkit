@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useDisconnect } from 'wagmi';
 import { useConnectionStatus } from '../../hooks/useConnectionStatus';
 import ConnectOptions from '../ConnectOptions/ConnectOptions';
 import { Dialog } from '../Dialog/Dialog';
@@ -16,7 +16,6 @@ export function ConnectModal({ onClose, open }: ConnectModalProps) {
   const connectionStatus = useConnectionStatus();
 
   const { disconnect } = useDisconnect();
-  const { isConnecting } = useAccount();
 
   // when a user cancels or dismisses the SignIn modal for SIWE, disconnect and call onClose
   const onAuthCancel = React.useCallback(() => {
@@ -28,10 +27,10 @@ export function ConnectModal({ onClose, open }: ConnectModalProps) {
     // We use this for the WalletButton. If the QR code shows up and
     // the user closes it, we need to know the wallet isn't connecting anymore.
     // So if it's connecting, we disconnect it.
-    if (isConnecting) disconnect();
+    if (connectionStatus === 'loading') disconnect();
 
     onClose();
-  }, [onClose, disconnect, isConnecting]);
+  }, [onClose, disconnect, connectionStatus]);
 
   if (connectionStatus === 'disconnected') {
     return (

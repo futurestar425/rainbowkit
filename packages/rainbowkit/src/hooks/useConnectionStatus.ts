@@ -9,9 +9,13 @@ export type ConnectionStatus =
 
 export function useConnectionStatus(): ConnectionStatus {
   const authenticationStatus = useAuthenticationStatus();
-  const { isConnected } = useAccount();
+  const { status: connectorStatus } = useAccount();
 
-  if (!isConnected) {
+  if (connectorStatus === 'connecting' || connectorStatus === 'reconnecting') {
+    return 'loading';
+  }
+
+  if (connectorStatus === 'disconnected') {
     return 'disconnected';
   }
 
