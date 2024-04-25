@@ -146,6 +146,7 @@ const sei = {
 const config = getDefaultConfig({
   appName: 'RainbowKit Demo',
   projectId,
+  multiInjectedProviderDiscovery: false,
   chains: [
     mainnet,
     polygon,
