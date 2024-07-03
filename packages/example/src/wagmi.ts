@@ -126,6 +126,7 @@ coinbaseWallet.preference = 'all';
 export const config = getDefaultConfig({
   appName: 'RainbowKit Demo',
   projectId,
+  multiInjectedProviderDiscovery: false,
   chains: [
     mainnet,
     polygon,
