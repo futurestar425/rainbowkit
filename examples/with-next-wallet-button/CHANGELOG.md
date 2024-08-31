@@ -1,5 +1,13 @@
 # with-next-wallet-button
 
+## 0.0.24
+
+### Patch Changes
+
+- Updated dependencies [63d8386]
+- Updated dependencies [d46637a]
+  - @rainbow-me/rainbowkit@2.1.6
+
 ## 0.0.23
 
 ### Patch Changes
